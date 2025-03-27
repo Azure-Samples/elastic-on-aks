@@ -1,0 +1,36 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: server
+spec:
+  version: 8.17.3
+  http:
+    service:
+      spec:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+  nodeSets:
+  - name: server
+    count: 3
+    config:
+      node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: agentpool
+                  operator: In
+                  values:
+                  - server
+        containers:
+        - name: elasticsearch
+          resources:
+            limits:
+              memory: 100Gi
+              cpu: "30"
+            requests:
+              memory: 100Gi
+              cpu: "30"

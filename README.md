@@ -2,5 +2,10 @@
 
 ## Create AKS cluster
 ```
-bash ./scripts/setup.sh
+bash ./scripts/aks.sh
+```
+
+## Create ElasticSearch Cluster
+```
+bash ./scripts/elk.sh
 ```

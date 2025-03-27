@@ -9,9 +9,9 @@ CLUSTER_NAME=elk-test
 SYSTEM_POOL_NAME=system
 SYSTEM_VM_SIZE=Standard_D8ds_v5
 SYSTEM_POOL_SIZE=3
-USER_POOL_NAME=user
-USER_VM_SIZE=Standard_D32Ps_v5
-USER_POOL_SIZE=3
+SERVER_POOL_NAME=server
+SERVER_VM_SIZE=Standard_D32Ps_v5
+SERVER_POOL_SIZE=3
 VNET_CIDR="10.0.0.0/8"
 SUBNET_CIDR="10.1.0.0/16"
 
@@ -86,16 +86,16 @@ else
         --vnet-subnet-id ${NODE_SUBNET_ID}
 fi
 
-if az aks nodepool show --resource-group ${RESOURCE_GROUP} --cluster-name ${CLUSTER_NAME} --name ${USER_POOL_NAME} &>/dev/null; then
-    echo "User pool already exists."
+if az aks nodepool show --resource-group ${RESOURCE_GROUP} --cluster-name ${CLUSTER_NAME} --name ${SERVER_POOL_NAME} &>/dev/null; then
+    echo "Server pool already exists."
 else
-    echo "User pool does not exist. Creating ..."
+    echo "Server pool does not exist. Creating ..."
     az aks nodepool add \
         --resource-group ${RESOURCE_GROUP} \
         --cluster-name ${CLUSTER_NAME} \
-        --name ${USER_POOL_NAME} \
-        --node-vm-size ${USER_VM_SIZE} \
-        --node-count ${USER_POOL_SIZE} \
+        --name ${SERVER_POOL_NAME} \
+        --node-vm-size ${SERVER_VM_SIZE} \
+        --node-count ${SERVER_POOL_SIZE} \
         --vnet-subnet-id ${NODE_SUBNET_ID}
 fi
 
