@@ -6,7 +6,7 @@ SUBSCRIPTION=137f0351-8235-42a6-ac7a-6b46be2d21c7
 RESOURCE_GROUP=elk-test
 LOCATION=eastus2
 VM_NAME=client
-VM_SIZE=Standard_D32s_v5
+VM_SIZE=Standard_D32ds_v5
 VNET_NAME=${VM_NAME}-net
 VNET_CIDR="192.168.0.0/16"
 SUBNET_CIDR="192.168.1.0/24"
@@ -85,11 +85,13 @@ else
         -n ${VM_NAME} \
         --image Ubuntu2204 \
         --size ${VM_SIZE} \
-        --admin-username azureuser \
-        --generate-ssh-keys \
-        --nics ${NIC_NAME}
+        --ssh-key-values ~/.ssh/id_rsa.pub \
+        --nics ${NIC_NAME} \
+        --os-disk-size-gb 512 \
+        --ephemeral-os-disk true
 fi
 
 # Show public IP
-echo "VM public IP:"
-az network public-ip show -g ${RESOURCE_GROUP} -n ${IP_NAME} --query ipAddress -o tsv
+CLIENT_PUBLIC_IP=$(az network public-ip show -g ${RESOURCE_GROUP} -n ${IP_NAME} --query ipAddress -o tsv)
+echo "Client public IP: ${CLIENT_PUBLIC_IP}"
+export CLIENT_PUBLIC_IP

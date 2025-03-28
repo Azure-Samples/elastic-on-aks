@@ -23,12 +23,14 @@ done
 while true; do
     echo "Waiting for ingress IP to be ready..."
     sleep 10
-    IP_ADDRESS=$(kubectl get service server-es-http -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    if [ -n "$IP_ADDRESS" ]; then
-        echo "Ingress IP is ready: $IP_ADDRESS"
+    SERVER_PUBLIC_IP=$(kubectl get service server-es-http -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    if [ -n "$SERVER_PUBLIC_IP" ]; then
+        echo "Ingress IP is ready: $SERVER_PUBLIC_IP"
         break
     fi
 done
+export SERVER_PUBLIC_IP
+echo "Server public IP: ${SERVER_PUBLIC_IP}"
 
-PASSWORD=$(kubectl get secret server-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode)
-curl -u "elastic:$PASSWORD" -k "https://$IP_ADDRESS:9200"
+SERVER_PASSWORD=$(kubectl get secret server-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode)
+export SERVER_PASSWORD
